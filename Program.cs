@@ -164,7 +164,7 @@ static async Task<int> RunAsync(SyncConfig config, CancellationToken ct)
     // Pipeline runner + verify logic (shared between live and fallback modes)
     async Task RunPipeline(Action? onRefresh = null)
     {
-        var scanTask = FileScannerStage.RunAsync(config, ch1.Writer, logger, ct);
+        var scanTask = FileScannerStage.RunAsync(scanFiles, config, ch1.Writer, logger, ct);
         var hashTask = HashingStage.RunAsync(ch1.Reader, ch2.Writer, db,
             tracker, config, logger, ct);
         var transferTask = TransferStage.RunAsync(ch2.Reader, ch3.Writer, sftpPool, remote, db,
