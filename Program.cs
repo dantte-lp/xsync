@@ -88,14 +88,27 @@ static async Task<int> RunAsync(SyncConfig config, CancellationToken ct)
     }
 
     // Scan files
-    var allFiles = Directory.EnumerateFiles(config.LocalDir)
-        .Where(f => !SyncConfig.ExcludePatterns.Any(p =>
-            Path.GetFileName(f).EndsWith(p, StringComparison.OrdinalIgnoreCase)))
-        .Where(f => config.FilterFile is null ||
-            Path.GetFileName(f).Equals(config.FilterFile, StringComparison.OrdinalIgnoreCase))
-        .Select(f => new FileInfo(f))
-        .OrderBy(f => f.Name, StringComparer.Ordinal)
-        .ToList();
+    List<FileInfo> allFiles;
+
+    // --file with absolute/relative path outside local_dir
+    if (config.FilterFile is not null && (Path.IsPathRooted(config.FilterFile) ||
+        config.FilterFile.Contains(Path.DirectorySeparatorChar) ||
+        config.FilterFile.Contains(Path.AltDirectorySeparatorChar)))
+    {
+        var fi = new FileInfo(config.FilterFile);
+        allFiles = fi.Exists ? [fi] : [];
+    }
+    else
+    {
+        allFiles = Directory.EnumerateFiles(config.LocalDir)
+            .Where(f => !SyncConfig.ExcludePatterns.Any(p =>
+                Path.GetFileName(f).EndsWith(p, StringComparison.OrdinalIgnoreCase)))
+            .Where(f => config.FilterFile is null ||
+                Path.GetFileName(f).Equals(config.FilterFile, StringComparison.OrdinalIgnoreCase))
+            .Select(f => new FileInfo(f))
+            .OrderBy(f => f.Name, StringComparer.Ordinal)
+            .ToList();
+    }
 
     // Interactive file selection (only in interactive terminal, no --file filter, no --quiet)
     var scanFiles = allFiles;
