@@ -1,0 +1,31 @@
+# Build
+bin/
+obj/
+publish/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+
+# Runtime
+logs/
+*.db
+*.db-wal
+*.db-shm
+
+# PVS-Studio
+pvs-csv/
+pvs-report.plog
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Python (legacy)
+.venv/
+__pycache__/
+*.pyc

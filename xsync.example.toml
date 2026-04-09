@@ -1,0 +1,27 @@
+# xsync configuration
+# Copy to xsync.toml and adjust for your environment.
+# CLI arguments override these values.
+
+[source]
+local_dir = "data"                      # directory with files to sync
+
+[target]
+host = "user@remote-host"
+port = 22
+remote_dir = "/backup/data"
+ssh_key = ".ssh/id_ed25519"             # relative to config or absolute
+
+[transfer]
+parallelism = 4                         # concurrent SFTP connections (1-8)
+checkpoint_mb = 10                      # resume checkpoint interval
+
+[storage]
+db = "xsync.db"                         # metadata database
+logs_dir = "logs"                       # structured JSON logs
+
+[filter]
+exclude = [".crdownload", ".part", ".tmp", ".swp"]
+compressed_extensions = [
+  "tar.gz", "tgz", "gz", "xz", "bz2",
+  "qcow2", "ova", "iso", "exe", "zip", "7z",
+]
